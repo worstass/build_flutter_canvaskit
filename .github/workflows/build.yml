@@ -1,0 +1,33 @@
+name: Build Canvaskit
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PATH: ${GITHUB_WORKSPACE}/depot_tools:${GITHUB_WORKSPACE}/engine/src/flutter/bin:${GITHUB_WORKSPACE}/engine/src/flutter/lib/web_ui/dev:${PATH}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install python3
+        run: sudo apt-get update && sudo apt-get install -y python3 curl pkg-config git
+      - name: Install depot_tools
+        run: git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+      - name: Download Engine Source Code
+        run: |
+          mkdir engine
+          cd engine
+          fetch flutter
+          git -C src/flutter checkout -b 3.24.1 tags/3.24.1
+          cd src/flutter
+          gclient sync
+      - name: Build the code
+        run: |
+          cd engine/src/flutter
+          felt build canvaskit
+      - name: Archive release output
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter_canvaskit_wasm_release
+          path: engine/src/flutter/out/wasm_debug
