@@ -20,7 +20,7 @@ jobs:
           cd engine
           fetch flutter
           git -C src/flutter checkout -b 3.24.1 tags/3.24.1
-          cd src/flutter
+          cat .gclient
           gclient sync
       - name: Build the code
         run: |
