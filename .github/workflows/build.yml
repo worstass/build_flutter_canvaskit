@@ -6,14 +6,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      PATH: ${GITHUB_WORKSPACE}/depot_tools:${GITHUB_WORKSPACE}/engine/src/flutter/bin:${GITHUB_WORKSPACE}/engine/src/flutter/lib/web_ui/dev:${PATH}
     steps:
       - uses: actions/checkout@v4
       - name: Install python3
         run: sudo apt-get update && sudo apt-get install -y python3 curl pkg-config git
       - name: Install depot_tools
-        run: git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+        run: |
+          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+          echo $GITHUB_WORKSPACE/depot_tools >> $GITHUB_PATH
       - name: Download Engine Source Code
         run: |
           mkdir engine
@@ -22,6 +22,8 @@ jobs:
           git -C src/flutter checkout -b 3.24.1 tags/3.24.1
           cat .gclient
           gclient sync
+          echo $GITHUB_WORKSPACE/engine/src/flutter/bin >> $GITHUB_PATH
+          echo $GITHUB_WORKSPACE/engine/src/flutter/lib/web_ui/dev >> $GITHUB_PATH
       - name: Build the code
         run: |
           cd engine/src/flutter
