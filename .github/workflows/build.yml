@@ -22,6 +22,10 @@ jobs:
           gclient sync
           echo $GITHUB_WORKSPACE/engine/src/flutter/bin >> $GITHUB_PATH
           echo $GITHUB_WORKSPACE/engine/src/flutter/lib/web_ui/dev >> $GITHUB_PATH
+      - name: Cache 3rd parties src
+        uses: actions/cache@v4
+        with:
+          path: engine/src/flutter/third_party
       - name: Build the code
         run: |
           cd engine/src/flutter
