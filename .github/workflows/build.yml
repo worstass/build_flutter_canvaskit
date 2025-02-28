@@ -14,13 +14,11 @@ jobs:
         run: |
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
           echo $GITHUB_WORKSPACE/depot_tools >> $GITHUB_PATH
-      - name: Download Engine Source Code
+      - name: Download Flutter Source Code
         run: |
-          mkdir engine
-          cd engine
-          fetch flutter
-          git -C src/flutter checkout -b 3.24.1 tags/3.24.1
-          cat .gclient
+          git clone --depth 1 --branch 3.29.0 https://github.com/flutter/flutter.git
+          cd flutter
+          cp engine/scripts/standard.gclient .gclient
           gclient sync
           echo $GITHUB_WORKSPACE/engine/src/flutter/bin >> $GITHUB_PATH
           echo $GITHUB_WORKSPACE/engine/src/flutter/lib/web_ui/dev >> $GITHUB_PATH
